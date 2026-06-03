@@ -10,5 +10,5 @@ int main() {
   std::cout << "$ ";
   string str;
   cin>>str;
-  if(!str.compare("XYZ")) cout<<"command not found";
+  cout<<str<<": command not found";
 }
