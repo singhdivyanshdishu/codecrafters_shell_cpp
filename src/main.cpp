@@ -12,7 +12,8 @@ int main() {
   cout << "$ ";
   string str;
   cin>>str;
-  cout<<str<<": command not found"<<endl;
   if(str=="exit") break;
+  cout<<str<<": command not found"<<endl;
+
 }
 }
