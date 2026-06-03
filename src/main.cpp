@@ -14,7 +14,7 @@ int main() {
   getline(cin,str);
   if(str=="exit") break;
   else if(str.substr(0,4)=="echo") {
-    cout <<endl<< str.substr(5)<<endl;
+    cout << str.substr(5)<<endl;
   }
   else cout<<str<<": command not found"<<endl;
 
