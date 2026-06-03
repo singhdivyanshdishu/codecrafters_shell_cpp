@@ -11,9 +11,12 @@ int main() {
   while(true){
   cout << "$ ";
   string str;
-  cin>>str;
+  getline(cin,str);
   if(str=="exit") break;
-  cout<<str<<": command not found"<<endl;
+  if(str.substr(0,5)=="echo") {
+    cout << str.substr(5);
+  }
+  else cout<<str<<": command not found"<<endl;
 
 }
 }
