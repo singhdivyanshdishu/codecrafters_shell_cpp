@@ -7,9 +7,12 @@ int main() {
   cerr << unitbuf;
 
   // TODO: Uncomment the code below to pass the first stage
+  string exit;
   while(true){
   cout << "$ ";
   string str;
   cin>>str;
-  cout<<str<<": command not found"<<endl;}
+  cout<<str<<": command not found"<<endl;
+  if(str.compare(exit)) break;
+}
 }
