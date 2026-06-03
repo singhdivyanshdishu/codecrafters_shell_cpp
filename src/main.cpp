@@ -17,7 +17,7 @@ int main() {
     cout << str.substr(5)<<endl;
   }
   else if(str.substr(0,4)=="type"){
-    if(str.substr(5,9)=="echo"||str.substr(5,9)=="exit"||str.substr(5,9)=="type") cout << str.substr(5,9) << "is a shell builtin" << endl;
+    if(str.substr(5,9)=="echo"||str.substr(5,9)=="exit"||str.substr(5,9)=="type") cout << str.substr(5,9) << " is a shell builtin" << endl;
     else cout << str.substr(5) << ": not found" << endl;
   }
   else cout<<str<<": command not found"<<endl;
