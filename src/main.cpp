@@ -45,11 +45,22 @@ int main() {
                     while (getline(ss, dir, ':')) {
                         fs::path candidate = fs::path(dir) / cmd;
 
-                        if (fs::exists(candidate)) {
-                            cout << cmd << " is " << candidate.string() << endl;
-                            found = true;
-                            break;
-                        }
+                        if(fs::exists(candidate))
+{
+    auto perms = fs::status(candidate).permissions();
+
+    bool executable =
+        ((perms & fs::perms::owner_exec) != fs::perms::none) ||
+        ((perms & fs::perms::group_exec) != fs::perms::none) ||
+        ((perms & fs::perms::others_exec) != fs::perms::none);
+
+    if(executable)
+    {
+        cout << cmd << " is " << candidate.string() << endl;
+        found = true;
+        break;
+    }
+}
                     }
                 }
 
