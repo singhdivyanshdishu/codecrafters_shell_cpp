@@ -13,6 +13,6 @@ int main() {
   string str;
   cin>>str;
   cout<<str<<": command not found"<<endl;
-  if(str.compare("exit")) break;
+  if(str=="exit") break;
 }
 }
