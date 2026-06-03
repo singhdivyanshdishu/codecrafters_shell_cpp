@@ -11,5 +11,5 @@ int main() {
   cout << "$ ";
   string str;
   cin>>str;
-  cout<<str<<": command not found";}
+  cout<<str<<": command not found"<<endl;}
 }
