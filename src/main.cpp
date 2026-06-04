@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
+#include<vector>
 #include <sstream>
 #include <filesystem>
 #include <cstdlib>
+#include <unistd.h>
+#include <sys/wait.h>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -69,6 +72,39 @@ void handleType(const string& cmd)
     }
 }
 
+void executeExternalCommand(const string& line) {
+    stringstream ss(line);
+    string word ;
+    vector<string> tokens;
+    while(ss >> word){
+        tokens.push_back(word);
+    }
+    string path = findExecutable(tokens[0]);
+    if(path.empty()){
+        cout << tokens[0] << ": command not found" << endl;
+        return;
+    }
+    vector<char*> argv;
+
+    for(auto& token:tokens){
+        argv.push_back(token.data());
+    }
+    argv.push_back(nullptr);
+
+    pid_t pid=fork();
+
+    if(pid == 0 ){
+        execv(path.c_str(),argv.data());
+        exit(1);
+    }
+    else
+{
+    waitpid(pid, nullptr, 0);
+}
+
+
+}
+
 int main()
 {
     cout << unitbuf;
@@ -80,6 +116,10 @@ int main()
 
         string str;
         getline(cin, str);
+        if(str.empty())
+        {
+            continue;
+        }
 
         if(str == "exit")
         {
@@ -98,7 +138,7 @@ int main()
 
         else
         {
-            cout << str << ": command not found" << endl;
+            executeExternalCommand(str);
         }
     }
 
