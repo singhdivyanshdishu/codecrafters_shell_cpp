@@ -14,7 +14,8 @@ bool isBuiltin(const string& cmd)
 {
     return cmd == "echo" ||
            cmd == "exit" ||
-           cmd == "type";
+           cmd == "type" ||
+           cmd == "pwd";
 }
 
 bool isExecutable(const fs::path& file)
@@ -105,6 +106,10 @@ void executeExternalCommand(const string& line) {
 
 }
 
+void handlePwd(){
+    cout<< fs::current_path() << endl;
+}
+
 int main()
 {
     cout << unitbuf;
@@ -134,6 +139,10 @@ int main()
         else if(str.substr(0, 5) == "type ")
         {
             handleType(str.substr(5));
+        }
+        else if(str == "pwd"){
+            handlePwd();
+
         }
 
         else
