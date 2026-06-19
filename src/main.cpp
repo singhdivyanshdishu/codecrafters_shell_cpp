@@ -107,7 +107,7 @@ void executeExternalCommand(const string& line) {
 }
 
 void handlePwd(){
-    cout<< fs::current_path() << endl;
+    cout<< fs::current_path().string() << endl;
 }
 
 int main()
