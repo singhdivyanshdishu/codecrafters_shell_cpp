@@ -15,7 +15,8 @@ bool isBuiltin(const string& cmd)
     return cmd == "echo" ||
            cmd == "exit" ||
            cmd == "type" ||
-           cmd == "pwd";
+           cmd == "pwd"  ||
+           cmd == "cd"   ;
 }
 
 bool isExecutable(const fs::path& file)
@@ -110,6 +111,24 @@ void handlePwd(){
     cout<< fs::current_path().string() << endl;
 }
 
+void handleCd(string pathStr)
+{
+    fs::path p = pathStr;
+
+    if (!fs::exists(p))
+    {
+        cout << "cd: " << pathStr << ": No such file or directory" << endl;
+        return;
+    }
+
+    if (!fs::is_directory(p))
+    {
+        cout << "cd: " << pathStr << ": No such file or directory" << endl;
+        return;
+    }
+
+    fs::current_path(p);
+}
 int main()
 {
     cout << unitbuf;
@@ -118,19 +137,16 @@ int main()
     while(true)
     {
         cout << "$ ";
-
         string str;
         getline(cin, str);
         if(str.empty())
         {
             continue;
         }
-
         if(str == "exit")
         {
             break;
         }
-
         else if(str.substr(0, 5) == "echo ")
         {
             cout << str.substr(5) << endl;
@@ -142,14 +158,14 @@ int main()
         }
         else if(str == "pwd"){
             handlePwd();
-
         }
-
+        else if(str.substr(0,2)=="cd"){
+            handleCd(str.substr(3));
+        }
         else
         {
             executeExternalCommand(str);
         }
     }
-
     return 0;
 }
