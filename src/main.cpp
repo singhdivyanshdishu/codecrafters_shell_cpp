@@ -133,15 +133,26 @@ vector<string> tokenize(const string& line)
 {
     vector<string> tokens;
     string current;
+
     bool inSingleQuotes = false;
+    bool inDoubleQuotes = false;
 
     for(char ch : line)
     {
-        if(ch == '\'')
+        // Toggle single quotes only when not inside double quotes
+        if(ch == '\'' && !inDoubleQuotes)
         {
             inSingleQuotes = !inSingleQuotes;
         }
-        else if(ch == ' ' && !inSingleQuotes)
+
+        // Toggle double quotes only when not inside single quotes
+        else if(ch == '"' && !inSingleQuotes)
+        {
+            inDoubleQuotes = !inDoubleQuotes;
+        }
+
+        // Space splits arguments only outside ALL quotes
+        else if(ch == ' ' && !inSingleQuotes && !inDoubleQuotes)
         {
             if(!current.empty())
             {
@@ -149,6 +160,8 @@ vector<string> tokenize(const string& line)
                 current.clear();
             }
         }
+
+        // Normal character
         else
         {
             current += ch;
