@@ -113,6 +113,9 @@ void handlePwd(){
 
 void handleCd(string pathStr)
 {
+    if(pathStr == "~"){
+        pathStr = getenv("HOME");
+    }
     fs::path p = pathStr;
 
     if (!fs::exists(p))
