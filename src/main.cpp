@@ -9,6 +9,7 @@
 
 using namespace std;
 namespace fs = std::filesystem;
+vector<string> tokenize(const string& line);
 
 bool isBuiltin(const string& cmd)
 {
@@ -75,12 +76,7 @@ void handleType(const string& cmd)
 }
 
 void executeExternalCommand(const string& line) {
-    stringstream ss(line);
-    string word ;
-    vector<string> tokens;
-    while(ss >> word){
-        tokens.push_back(word);
-    }
+     vector<string> tokens = tokenize(line);
     string path = findExecutable(tokens[0]);
     if(path.empty()){
         cout << tokens[0] << ": command not found" << endl;
@@ -132,6 +128,40 @@ void handleCd(string pathStr)
 
     fs::current_path(p);
 }
+
+vector<string> tokenize(const string& line)
+{
+    vector<string> tokens;
+    string current;
+    bool inSingleQuotes = false;
+
+    for(char ch : line)
+    {
+        if(ch == '\'')
+        {
+            inSingleQuotes = !inSingleQuotes;
+        }
+        else if(ch == ' ' && !inSingleQuotes)
+        {
+            if(!current.empty())
+            {
+                tokens.push_back(current);
+                current.clear();
+            }
+        }
+        else
+        {
+            current += ch;
+        }
+    }
+
+    if(!current.empty())
+    {
+        tokens.push_back(current);
+    }
+
+    return tokens;
+}
 int main()
 {
     cout << unitbuf;
@@ -151,9 +181,22 @@ int main()
             break;
         }
         else if(str.substr(0, 5) == "echo ")
+{
+    // Use tokenizer so quoted arguments are parsed correctly.
+    vector<string> tokens = tokenize(str);
+
+    for(size_t i = 1; i < tokens.size(); i++)
+    {
+        if(i > 1)
         {
-            cout << str.substr(5) << endl;
+            cout << " ";
         }
+
+        cout << tokens[i];
+    }
+
+    cout << endl;
+}
 
         else if(str.substr(0, 5) == "type ")
         {
