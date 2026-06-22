@@ -136,9 +136,15 @@ vector<string> tokenize(const string& line)
 
     bool inSingleQuotes = false;
     bool inDoubleQuotes = false;
+    bool escape = false;
 
     for(char ch : line)
     {
+        if(escape){
+            current+= ch;
+            escape = false ;
+            continue;
+        }
         // Toggle single quotes only when not inside double quotes
         if(ch == '\'' && !inDoubleQuotes)
         {
