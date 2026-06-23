@@ -138,44 +138,68 @@ vector<string> tokenize(const string& line)
     bool inDoubleQuotes = false;
     bool escape = false;
 
-    for(char ch : line)
+    for(size_t i = 0; i < line.size(); i++)
     {
-        if(escape){
-            current+= ch;
-            escape = false ;
+        char ch = line[i];
+
+        // Backslash outside quotes
+        if(!inSingleQuotes && !inDoubleQuotes && ch == '\\')
+        {
+            if(i + 1 < line.size())
+            {
+                current += line[++i];
+            }
             continue;
         }
-        if(!inSingleQuotes && !inDoubleQuotes && ch == '\\'){
-            escape = true;
+
+        // Backslash inside double quotes
+        if(inDoubleQuotes && ch == '\\')
+        {
+            if(i + 1 < line.size())
+            {
+                char next = line[i + 1];
+
+                if(next == '"' || next == '\\')
+                {
+                    current += next;
+                    i++;
+                }
+                else
+                {
+                    current += '\\';
+                }
+            }
+            else
+            {
+                current += '\\';
+            }
+
             continue;
         }
-        // Toggle single quotes only when not inside double quotes
+
         if(ch == '\'' && !inDoubleQuotes)
         {
             inSingleQuotes = !inSingleQuotes;
+            continue;
         }
 
-        // Toggle double quotes only when not inside single quotes
-        else if(ch == '"' && !inSingleQuotes)
+        if(ch == '"' && !inSingleQuotes)
         {
             inDoubleQuotes = !inDoubleQuotes;
+            continue;
         }
 
-        // Space splits arguments only outside ALL quotes
-        else if(ch == ' ' && !inSingleQuotes && !inDoubleQuotes)
+        if(ch == ' ' && !inSingleQuotes && !inDoubleQuotes)
         {
             if(!current.empty())
             {
                 tokens.push_back(current);
                 current.clear();
             }
+            continue;
         }
 
-        // Normal character
-        else
-        {
-            current += ch;
-        }
+        current += ch;
     }
 
     if(!current.empty())
