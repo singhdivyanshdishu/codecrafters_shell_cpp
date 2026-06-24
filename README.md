@@ -78,16 +78,26 @@ Through this project I aim to gain a deeper understanding of:
 
 Current CodeCrafters Progress:
 
-- [x] REPL
-- [x] echo
-- [x] type
-- [x] pwd
-- [x] cd
-- [x] External commands
-- [x] Tokenization
+## Challenge Progress
+
+- [x] Introduction
+- [x] Navigation
+- [ ] Quoting
+  - [x] Single quotes
+  - [x] Double quotes
+  - [x] Backslash outside quotes
+  - [x] Backslash within single quotes
+  - [x] Backslash within double quotes
+  - [ ] Executing a quoted executable
 - [ ] Redirection
+- [ ] Command Completion
+- [ ] Filename Completion
+- [ ] Programmable Completion
+- [ ] Background Jobs
 - [ ] Pipelines
-- [ ] Advanced shell features
+- [ ] History
+- [ ] History Persistence
+- [ ] Parameter Expansion
 
 ## Tech Stack
 
