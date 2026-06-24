@@ -2,7 +2,28 @@
 
 A POSIX-inspired shell built in C++ as part of the CodeCrafters **"Build Your Own Shell"** challenge.
 
-This project is focused on understanding how real shells work internally by implementing command parsing, built-in commands, process execution, PATH resolution, redirection, pipelines, and other core shell features from scratch.
+This project explores how real shells work internally by implementing command parsing, built-in commands, process execution, PATH resolution, quoting, redirection, pipelines, and other core shell features from scratch.
+
+## Challenge Progress
+
+- [x] Introduction
+- [x] Navigation
+- [ ] Quoting
+  - [x] Single quotes
+  - [x] Double quotes
+  - [x] Backslash outside quotes
+  - [x] Backslash within single quotes
+  - [x] Backslash within double quotes
+  - [ ] Executing a quoted executable
+- [ ] Redirection
+- [ ] Command Completion
+- [ ] Filename Completion
+- [ ] Programmable Completion
+- [ ] Background Jobs
+- [ ] Pipelines
+- [ ] History
+- [ ] History Persistence
+- [ ] Parameter Expansion
 
 ## Features Implemented
 
@@ -15,6 +36,8 @@ This project is focused on understanding how real shells work internally by impl
 - External command execution
 - Command tokenization
 - Single quote handling
+- Double quote handling
+- Escape sequence handling
 
 ## Example
 
@@ -34,16 +57,26 @@ $ pwd
 /tmp
 ```
 
-## Project Structure
+## Requirements
 
-```text
-.
-├── src/
-│   └── main.cpp
-├── CMakeLists.txt
-├── codecrafters.yml
-├── vcpkg.json
-└── README.md
+### Arch Linux
+
+```bash
+sudo pacman -S --needed base-devel cmake git
+```
+
+### Ubuntu / Debian
+
+```bash
+sudo apt update
+sudo apt install build-essential cmake git
+```
+
+## Clone Repository
+
+```bash
+git clone https://github.com/singhdivyanshdishu/codecrafters_shell_cpp.git
+cd codecrafters_shell_cpp
 ```
 
 ## Build
@@ -74,37 +107,20 @@ Through this project I aim to gain a deeper understanding of:
 - POSIX system calls
 - Systems programming in C++
 
-## Progress
-
-Current CodeCrafters Progress:
-
-## Challenge Progress
-
-- [x] Introduction
-- [x] Navigation
-- [ ] Quoting
-  - [x] Single quotes
-  - [x] Double quotes
-  - [x] Backslash outside quotes
-  - [x] Backslash within single quotes
-  - [x] Backslash within double quotes
-  - [ ] Executing a quoted executable
-- [ ] Redirection
-- [ ] Command Completion
-- [ ] Filename Completion
-- [ ] Programmable Completion
-- [ ] Background Jobs
-- [ ] Pipelines
-- [ ] History
-- [ ] History Persistence
-- [ ] Parameter Expansion
-
 ## Tech Stack
 
 - C++17
 - CMake
 - POSIX APIs
 - CodeCrafters
+
+## Platform Support
+
+- ✅ Linux
+- ⚠️ Windows (untested)
+- ⚠️ macOS (untested)
+
+This project uses POSIX APIs and is primarily developed and tested on Linux.
 
 ## Motivation
 
