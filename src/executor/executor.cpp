@@ -1,6 +1,6 @@
 #include "executor.hpp"
 
-#include "../path/path.hpp"
+#include "../paths/path.hpp"
 
 #include <iostream>
 #include <vector>

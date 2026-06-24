@@ -1,5 +1,5 @@
 #include "builtins.hpp"
-#include "../path/path.hpp"
+#include "../paths/path.hpp"
 #include <iostream>
 #include <string>
 
