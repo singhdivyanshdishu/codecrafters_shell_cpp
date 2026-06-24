@@ -88,8 +88,16 @@ cmake --build build
 
 ## Run
 
+Using the CodeCrafters wrapper:
+
 ```bash
 ./your_program.sh
+```
+
+Or directly:
+
+```bash
+./build/shell
 ```
 
 ## Learning Objectives
