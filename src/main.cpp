@@ -6,10 +6,20 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <fstream>
 
 using namespace std;
 namespace fs = std::filesystem;
 vector<string> tokenize(const string& line);
+
+
+struct ParsedCommand
+{
+    vector<string> args;
+    bool redirectStdout = false;
+    string outputFile;
+};
 
 bool isBuiltin(const string& cmd)
 {
@@ -209,41 +219,84 @@ vector<string> tokenize(const string& line)
 
     return tokens;
 }
+
+ParsedCommand parseCommand(const string& line)
+{
+    vector<string> tokens = tokenize(line);
+
+    ParsedCommand result;
+
+    for(size_t i = 0; i < tokens.size(); i++)
+    {
+        if(tokens[i] == ">" || tokens[i] == "1>")
+        {
+            result.redirectStdout = true;
+            result.outputFile = tokens[i + 1];
+            break;
+        }
+
+        result.args.push_back(tokens[i]);
+    }
+
+    return result;
+}
+void writeOutput(
+    const string& output,
+    const ParsedCommand& cmd)
+{
+    if(cmd.redirectStdout)
+    {
+        ofstream file(cmd.outputFile);
+        file << output;
+    }
+    else
+    {
+        cout << output;
+    }
+}
+void handleEcho(const ParsedCommand& cmd)
+{
+    string output;
+
+    for(size_t i = 1; i < cmd.args.size(); i++)
+    {
+        if(i > 1)
+        {
+            output += " ";
+        }
+
+        output += cmd.args[i];
+    }
+
+    output += '\n';
+
+    writeOutput(output, cmd);
+}
+
 int main()
 {
     cout << unitbuf;
     cerr << unitbuf;
 
-    while(true)
-    {
+    while(true){
         cout << "$ ";
         string str;
         getline(cin, str);
-        if(str.empty())
-        {
+        if(str.empty()){
             continue;
         }
-        if(str == "exit")
-        {
+        if(str == "exit"){
             break;
         }
-        else if(str.substr(0, 5) == "echo ")
-{
-    // Use tokenizer so quoted arguments are parsed correctly.
-    vector<string> tokens = tokenize(str);
-
-    for(size_t i = 1; i < tokens.size(); i++)
-    {
-        if(i > 1)
-        {
-            cout << " ";
+        ParsedCommand cmd = parseCommand(str);
+        if(cmd.args.empty()){
+            continue;
         }
 
-        cout << tokens[i];
-    }
-
-    cout << endl;
-}
+        if(cmd.args[0] == "echo")
+        {
+            handleEcho(cmd);
+        }
 
         else if(str.substr(0, 5) == "type ")
         {
@@ -255,8 +308,7 @@ int main()
         else if(str.substr(0,2)=="cd"){
             handleCd(str.substr(3));
         }
-        else
-        {
+        else{
             executeExternalCommand(str);
         }
     }
