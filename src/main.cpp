@@ -1,316 +1,38 @@
 #include <iostream>
 #include <string>
-#include<vector>
-#include <sstream>
-#include <filesystem>
-#include <cstdlib>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <fstream>
+
+#include "parser/parser.hpp"
+#include "builtins/builtins.hpp"
+#include "executor/executor.hpp"
 
 using namespace std;
-namespace fs = std::filesystem;
-struct ParsedCommand
-{
-    vector<string> args;
-    bool redirectStdout = false;
-    string outputFile;
-};
-
-vector<string> tokenize(const string& line);
-ParsedCommand parseCommand(const string& line);
-
-
-
-
-bool isBuiltin(const string& cmd)
-{
-    return cmd == "echo" ||
-           cmd == "exit" ||
-           cmd == "type" ||
-           cmd == "pwd"  ||
-           cmd == "cd"   ;
-}
-
-bool isExecutable(const fs::path& file)
-{
-    auto perms = fs::status(file).permissions();
-
-    return
-        ((perms & fs::perms::owner_exec) != fs::perms::none) ||
-        ((perms & fs::perms::group_exec) != fs::perms::none) ||
-        ((perms & fs::perms::others_exec) != fs::perms::none);
-}
-
-string findExecutable(const string& cmd)
-{
-    char* pathEnv = getenv("PATH");
-
-    if(pathEnv == nullptr)
-        return "";
-
-    string path(pathEnv);
-    string dir;
-
-    stringstream ss(path);
-
-    while(getline(ss, dir, ':'))
-    {
-        fs::path candidate = fs::path(dir) / cmd;
-
-        if(fs::exists(candidate) && isExecutable(candidate))
-        {
-            return candidate.string();
-        }
-    }
-
-    return "";
-}
-
-void handleType(const string& cmd)
-{
-    if(isBuiltin(cmd))
-    {
-        cout << cmd << " is a shell builtin" << endl;
-        return;
-    }
-
-    string executablePath = findExecutable(cmd);
-
-    if(executablePath.empty())
-    {
-        cout << cmd << ": not found" << endl;
-    }
-    else
-    {
-        cout << cmd << " is " << executablePath << endl;
-    }
-}
-
-void executeExternalCommand(const string& line) {
-    ParsedCommand cmd = parseCommand(line);
-    vector<string>& tokens = cmd.args;
-    if(tokens.empty())
-{
-    return;
-}
-    string path = findExecutable(tokens[0]);
-    if(path.empty()){
-        cout << tokens[0] << ": command not found" << endl;
-        return;
-    }
-    vector<char*> argv;
-
-    for(auto& token:tokens){
-        argv.push_back(token.data());
-    }
-    argv.push_back(nullptr);
-
-    pid_t pid=fork();
-
-    if(pid == 0 )
-{
-    if(cmd.redirectStdout)
-    {
-        int fd = open(
-            cmd.outputFile.c_str(),
-            O_WRONLY | O_CREAT | O_TRUNC,
-            0644
-        );
-
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
-    }
-
-    execv(path.c_str(), argv.data());
-    exit(1);
-}
-    else
-{
-    waitpid(pid, nullptr, 0);
-}
-
-
-}
-
-void handlePwd(){
-    cout<< fs::current_path().string() << endl;
-}
-
-void handleCd(string pathStr)
-{
-    if(pathStr == "~"){
-        pathStr = getenv("HOME");
-    }
-    fs::path p = pathStr;
-
-    if (!fs::exists(p))
-    {
-        cout << "cd: " << pathStr << ": No such file or directory" << endl;
-        return;
-    }
-
-    if (!fs::is_directory(p))
-    {
-        cout << "cd: " << pathStr << ": No such file or directory" << endl;
-        return;
-    }
-
-    fs::current_path(p);
-}
-
-vector<string> tokenize(const string& line)
-{
-    vector<string> tokens;
-    string current;
-
-    bool inSingleQuotes = false;
-    bool inDoubleQuotes = false;
-    bool escape = false;
-
-    for(size_t i = 0; i < line.size(); i++)
-    {
-        char ch = line[i];
-
-        // Backslash outside quotes
-        if(!inSingleQuotes && !inDoubleQuotes && ch == '\\')
-        {
-            if(i + 1 < line.size())
-            {
-                current += line[++i];
-            }
-            continue;
-        }
-
-        // Backslash inside double quotes
-        if(inDoubleQuotes && ch == '\\')
-        {
-            if(i + 1 < line.size())
-            {
-                char next = line[i + 1];
-
-                if(next == '"' || next == '\\')
-                {
-                    current += next;
-                    i++;
-                }
-                else
-                {
-                    current += '\\';
-                }
-            }
-            else
-            {
-                current += '\\';
-            }
-
-            continue;
-        }
-
-        if(ch == '\'' && !inDoubleQuotes)
-        {
-            inSingleQuotes = !inSingleQuotes;
-            continue;
-        }
-
-        if(ch == '"' && !inSingleQuotes)
-        {
-            inDoubleQuotes = !inDoubleQuotes;
-            continue;
-        }
-
-        if(ch == ' ' && !inSingleQuotes && !inDoubleQuotes)
-        {
-            if(!current.empty())
-            {
-                tokens.push_back(current);
-                current.clear();
-            }
-            continue;
-        }
-
-        current += ch;
-    }
-
-    if(!current.empty())
-    {
-        tokens.push_back(current);
-    }
-
-    return tokens;
-}
-
-ParsedCommand parseCommand(const string& line)
-{
-    vector<string> tokens = tokenize(line);
-
-    ParsedCommand result;
-
-    for(size_t i = 0; i < tokens.size(); i++)
-    {
-        if(tokens[i] == ">" || tokens[i] == "1>")
-        {
-            result.redirectStdout = true;
-            result.outputFile = tokens[i + 1];
-            break;
-        }
-
-        result.args.push_back(tokens[i]);
-    }
-
-    return result;
-}
-void writeOutput(
-    const string& output,
-    const ParsedCommand& cmd)
-{
-    if(cmd.redirectStdout)
-    {
-        ofstream file(cmd.outputFile);
-        file << output;
-    }
-    else
-    {
-        cout << output;
-    }
-}
-void handleEcho(const ParsedCommand& cmd)
-{
-    string output;
-
-    for(size_t i = 1; i < cmd.args.size(); i++)
-    {
-        if(i > 1)
-        {
-            output += " ";
-        }
-
-        output += cmd.args[i];
-    }
-
-    output += '\n';
-
-    writeOutput(output, cmd);
-}
 
 int main()
 {
     cout << unitbuf;
     cerr << unitbuf;
 
-    while(true){
+    while(true)
+    {
         cout << "$ ";
+
         string str;
         getline(cin, str);
-        if(str.empty()){
+
+        if(str.empty())
+        {
             continue;
         }
-        if(str == "exit"){
+
+        if(str == "exit")
+        {
             break;
         }
+
         ParsedCommand cmd = parseCommand(str);
-        if(cmd.args.empty()){
+
+        if(cmd.args.empty())
+        {
             continue;
         }
 
@@ -318,20 +40,23 @@ int main()
         {
             handleEcho(cmd);
         }
-
         else if(str.substr(0, 5) == "type ")
         {
             handleType(str.substr(5));
         }
-        else if(str == "pwd"){
+        else if(str == "pwd")
+        {
             handlePwd();
         }
-        else if(str.substr(0,2)=="cd"){
+        else if(str.substr(0, 2) == "cd")
+        {
             handleCd(str.substr(3));
         }
-        else{
-            executeExternalCommand(str);
+        else
+        {
+            executeExternalCommand(cmd);
         }
     }
+
     return 0;
 }
