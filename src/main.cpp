@@ -11,15 +11,18 @@
 
 using namespace std;
 namespace fs = std::filesystem;
-vector<string> tokenize(const string& line);
-
-
 struct ParsedCommand
 {
     vector<string> args;
     bool redirectStdout = false;
     string outputFile;
 };
+
+vector<string> tokenize(const string& line);
+ParsedCommand parseCommand(const string& line);
+
+
+
 
 bool isBuiltin(const string& cmd)
 {
@@ -86,7 +89,12 @@ void handleType(const string& cmd)
 }
 
 void executeExternalCommand(const string& line) {
-     vector<string> tokens = tokenize(line);
+    ParsedCommand cmd = parseCommand(line);
+    vector<string>& tokens = cmd.args;
+    if(tokens.empty())
+{
+    return;
+}
     string path = findExecutable(tokens[0]);
     if(path.empty()){
         cout << tokens[0] << ": command not found" << endl;
@@ -101,10 +109,23 @@ void executeExternalCommand(const string& line) {
 
     pid_t pid=fork();
 
-    if(pid == 0 ){
-        execv(path.c_str(),argv.data());
-        exit(1);
+    if(pid == 0 )
+{
+    if(cmd.redirectStdout)
+    {
+        int fd = open(
+            cmd.outputFile.c_str(),
+            O_WRONLY | O_CREAT | O_TRUNC,
+            0644
+        );
+
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
     }
+
+    execv(path.c_str(), argv.data());
+    exit(1);
+}
     else
 {
     waitpid(pid, nullptr, 0);
