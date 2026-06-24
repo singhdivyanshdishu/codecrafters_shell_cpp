@@ -4,6 +4,9 @@ A POSIX-inspired shell built in C++ as part of the CodeCrafters **"Build Your Ow
 
 This project is focused on understanding how real shells work internally by implementing command parsing, built-in commands, process execution, PATH resolution, redirection, pipelines, and other core shell features from scratch.
 
+## Challenge Progress
+![CodeCrafters](https://backend.codecrafters.io/progress/shell/ba7bd936-33d7-46a1-83c8-05ab10dde777)
+
 ## Features Implemented
 
 - Interactive REPL
