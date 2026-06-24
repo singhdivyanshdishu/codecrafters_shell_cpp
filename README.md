@@ -15,6 +15,7 @@ This project explores how real shells work internally by implementing command pa
   - [x] Backslash within single quotes
   - [x] Backslash within double quotes
   - [ ] Executing a quoted executable
+
 - [ ] Redirection
 - [ ] Command Completion
 - [ ] Filename Completion
@@ -125,10 +126,10 @@ Through this project I aim to gain a deeper understanding of:
 ## Platform Support
 
 - ✅ Linux
-- ⚠️ Windows (untested)
-- ⚠️ macOS (untested)
+- ✅ WSL (Windows Subsystem for Linux)
+- ⚠️ Native Windows not tested
 
-This project uses POSIX APIs and is primarily developed and tested on Linux.
+This project uses POSIX APIs and is primarily developed and tested on Linux environments.
 
 ## Motivation
 
