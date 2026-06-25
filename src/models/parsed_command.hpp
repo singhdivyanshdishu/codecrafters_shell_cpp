@@ -7,5 +7,7 @@ struct ParsedCommand
 {
     std::vector<std::string> args;
     bool redirectStdout = false;
-    std::string outputFile;
+    std::string stdOutFile;
+    bool redirectStderr = false;
+    std::string stdErrFile;
 };

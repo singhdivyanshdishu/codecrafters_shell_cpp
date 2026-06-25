@@ -1,7 +1,5 @@
 #include "executor.hpp"
-
 #include "../paths/path.hpp"
-
 #include <iostream>
 #include <vector>
 #include <unistd.h>
@@ -43,13 +41,29 @@ void executeExternalCommand(const ParsedCommand& cmd)
         if(cmd.redirectStdout)
         {
             int fd = open(
-                cmd.outputFile.c_str(),
+                cmd.stdOutFile.c_str(),
                 O_WRONLY | O_CREAT | O_TRUNC,
                 0644
             );
+            if(fd == -1){
+                exit(1);
+            }
 
             dup2(fd, STDOUT_FILENO);
             close(fd);
+        }
+        if(cmd.redirectStderr){
+            int fd = open(
+                cmd.stdErrFile.c_str(),
+                O_WRONLY | O_CREAT |  O_TRUNC ,
+                0644
+            );
+            if(fd == -1){
+                exit(1);
+            }
+            dup2(fd , STDERR_FILENO);
+            close(fd);
+
         }
 
         execv(path.c_str(), argv.data());
