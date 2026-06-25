@@ -12,7 +12,7 @@ static void writeOutput(
 {
     if(cmd.redirectStdout)
     {
-        ofstream file(cmd.outputFile);
+        ofstream file(cmd.stdOutFile);
         file << output;
     }
     else
