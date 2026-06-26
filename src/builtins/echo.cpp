@@ -36,6 +36,9 @@ void handleEcho(const ParsedCommand& cmd)
     }
 
     output += '\n';
+    if(cmd.redirectStderr){
+        ofstream errFile(cmd.stdErrFile);
+    }
 
     writeOutput(output, cmd);
 }
