@@ -40,9 +40,16 @@ void executeExternalCommand(const ParsedCommand& cmd)
     {
         if(cmd.redirectStdout)
         {
+            int flags = O_WRONLY | O_CREAT;
+            if(cmd.appendStdout){
+                flags |= O_APPEND;
+            }
+            else{
+                flags |= O_TRUNC;
+            }
             int fd = open(
                 cmd.stdOutFile.c_str(),
-                O_WRONLY | O_CREAT | O_TRUNC,
+                flags,
                 0644
             );
             if(fd == -1){

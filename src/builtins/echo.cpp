@@ -12,8 +12,14 @@ static void writeOutput(
 {
     if(cmd.redirectStdout)
     {
-        ofstream file(cmd.stdOutFile);
-        file << output;
+        if(cmd.appendStdout){
+            ofstream file(cmd.stdOutFile , ios::app);
+            file << output;
+        }
+        else{
+            ofstream file(cmd.stdOutFile);
+            file << output;
+        }
     }
     else
     {
@@ -36,6 +42,7 @@ void handleEcho(const ParsedCommand& cmd)
     }
 
     output += '\n';
+
     if(cmd.redirectStderr){
         ofstream errFile(cmd.stdErrFile);
     }
