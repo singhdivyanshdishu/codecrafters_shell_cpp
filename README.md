@@ -11,8 +11,8 @@ This project explores how real shells work internally by implementing command pa
 - [x] Quoting
 - [ ] Redirection
     - [x] Redirect stdout
-    - [ ] Redirect stderr
-    - [ ] Append stdout
+    - [x] Redirect stderr
+    - [x] Append stdout
     - [ ] Append stderr
 - [ ] Command Completion
 - [ ] Filename Completion
