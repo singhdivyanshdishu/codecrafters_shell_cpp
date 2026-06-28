@@ -1,13 +1,23 @@
 #include "line_editor.hpp"
 
-#include <iostream>
+#include <readline/readline.h>
+
+#include <cstdlib>
+#include <string>
 
 std::string LineEditor::readLine(const std::string& prompt)
 {
-    std::cout << prompt;
+    char* buffer = readline(prompt.c_str());
 
-    std::string line;
-    std::getline(std::cin, line);
+    // Handle EOF (Ctrl+D)
+    if (buffer == nullptr)
+    {
+        return "";
+    }
+
+    std::string line(buffer);
+
+    free(buffer);
 
     return line;
 }

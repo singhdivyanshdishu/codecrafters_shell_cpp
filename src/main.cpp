@@ -1,12 +1,11 @@
+#include "../completion/completion.hpp"
 #include "input/line_editor.hpp"
 #include "parser/parser.hpp"
 #include "builtins/builtins.hpp"
 #include "executor/executor.hpp"
 
 #include <iostream>
-
 #include <string>
-
 
 using namespace std;
 
@@ -16,43 +15,40 @@ int main()
     cerr << unitbuf;
 
     LineEditor lineEditor;
-    while(true)
+
+    // Register Readline completion callback.
+    initializeCompletion();
+
+    while (true)
     {
-      std::string str = lineEditor.readLine("$ ");
-
-
-        if(str.empty())
-        {
-            continue;
-        }
-
-        if(str == "exit")
-        {
-            break;
-        }
+        string str = lineEditor.readLine("$ ");
 
         ParsedCommand cmd = parseCommand(str);
 
-        if(cmd.args.empty())
+        if (cmd.args.empty())
         {
             continue;
         }
 
-        if(cmd.args[0] == "echo")
+        if (cmd.args[0] == "echo")
         {
             handleEcho(cmd);
         }
-        else if(str.substr(0, 5) == "type ")
+        else if (cmd.args[0] == "type")
         {
-            handleType(str.substr(5));
+            handleType(cmd);
         }
-        else if(str == "pwd")
+        else if (cmd.args[0] == "pwd")
         {
             handlePwd();
         }
-        else if(str.substr(0, 2) == "cd")
+        else if (cmd.args[0] == "cd")
         {
-            handleCd(str.substr(3));
+            handleCd(cmd);
+        }
+        else if (cmd.args[0] == "exit")
+        {
+            break;
         }
         else
         {
