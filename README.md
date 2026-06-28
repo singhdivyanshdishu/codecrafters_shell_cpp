@@ -2,7 +2,7 @@
 
 A POSIX-inspired shell built in C++ as part of the CodeCrafters **"Build Your Own Shell"** challenge.
 
-This project explores how real shells work internally by implementing command parsing, built-in commands, process execution, PATH resolution, quoting, redirection, pipelines, and other core shell features from scratch.
+It recreates core shell functionality such as command parsing, built-in commands, process execution, PATH resolution, quoting, redirection, and progressively expands toward command completion, pipelines, job control, history, parameter expansion, and other shell features.
 
 ## Challenge Progress
 
@@ -27,17 +27,35 @@ This project explores how real shells work internally by implementing command pa
 
 ## Features Implemented
 
+### Shell Core
+
 - Interactive REPL
-- `echo` builtin
-- `type` builtin
-- `pwd` builtin
-- `cd` builtin
-- Executable lookup using `PATH`
+- Built-in command dispatch
 - External command execution
+- Executable lookup using `PATH`
+
+### Built-in Commands
+
+- `echo`
+- `exit`
+- `type`
+- `pwd`
+- `cd`
+
+### Parsing
+
 - Command tokenization
 - Single quote handling
 - Double quote handling
-- Escape sequence handling
+- Backslash escaping
+- Quoted executable execution
+
+### Redirection
+
+- `>` Redirect stdout
+- `>>` Append stdout
+- `2>` Redirect stderr
+- `2>>` Append stderr
 
 ## Example
 
@@ -45,16 +63,18 @@ This project explores how real shells work internally by implementing command pa
 $ pwd
 /home/divyansh
 
-$ echo hello world
-hello world
-
 $ type ls
 ls is /usr/bin/ls
 
-$ cd /tmp
+$ echo Hello World > output.txt
 
-$ pwd
-/tmp
+$ cat output.txt
+Hello World
+
+$ ls nonexistent 2>> errors.txt
+
+$ cat errors.txt
+ls: cannot access 'nonexistent': No such file or directory
 ```
 
 ## Requirements
@@ -104,22 +124,32 @@ Or directly:
 
 Through this project I aim to gain a deeper understanding of:
 
-- Shell internals
-- Process creation and management
-- Command parsing
+- POSIX shells
+- Process creation and management (`fork`, `execv`, `waitpid`)
+- Command parsing and lexical analysis
 - PATH resolution
 - Built-in command implementation
 - File descriptors
 - Input/output redirection
 - Pipelines
-- POSIX system calls
+- Terminal interaction
 - Systems programming in C++
 
-## Planned Architecture
+## Concepts Covered
 
-The current implementation is intentionally kept in a single source file (`src/main.cpp`) while progressing through the CodeCrafters Shell challenge.
+- POSIX APIs
+- Linux Systems Programming
+- Process Management
+- Shell Parsing
+- Lexical Analysis
+- Command Execution
+- PATH Resolution
+- File Descriptors
+- Input/Output Redirection
+- Modern C++
+- CMake
 
-As more advanced features are added (redirection, pipelines, job control, history, completion, parameter expansion, etc.), the project will be refactored into a modular architecture similar to real-world shell implementations.
+## Project Architecture
 
 ```text
 codecrafters-shell-cpp/
@@ -191,7 +221,7 @@ codecrafters-shell-cpp/
 
 | Module | Responsibility |
 |----------|---------------|
-| `parser` | Tokenization, quoting rules, command parsing |
+| `parser` | Tokenization, quoting rules, and command parsing |
 | `models` | Shared shell data structures |
 | `builtins` | Built-in commands such as `echo`, `cd`, `pwd`, `type`, `history`, and `jobs` |
 | `executor` | Process execution, redirection, pipelines, and background jobs |
@@ -202,21 +232,12 @@ codecrafters-shell-cpp/
 | `path` | PATH resolution and executable discovery |
 | `utils` | Shared helper functions and utilities |
 
-### Refactoring Roadmap
-
-- [ ] Extract `ParsedCommand` into a dedicated model
-- [ ] Extract tokenizer and parser into separate modules
-- [ ] Extract built-in commands into a dedicated subsystem
-- [ ] Extract process execution and redirection logic
-- [ ] Introduce a multi-file CMake build structure
-- [ ] Add unit tests
-- [ ] Complete full modular shell architecture
-
 ## Tech Stack
 
 - C++17
 - CMake
 - POSIX APIs
+- Linux
 - CodeCrafters
 
 ## Platform Support
@@ -225,10 +246,10 @@ codecrafters-shell-cpp/
 - ✅ WSL (Windows Subsystem for Linux)
 - ⚠️ Native Windows not tested
 
-This project uses POSIX APIs and is primarily developed and tested on Linux environments.
+This project uses POSIX APIs and is primarily developed and tested on Linux-based environments.
 
 ## Motivation
 
-I am building this project to strengthen my systems programming skills and gain hands-on experience with how command-line interpreters work under the hood.
+This project is a hands-on exploration of Unix shell internals and systems programming. Rather than studying operating system concepts in isolation, each Codecrafters stage incrementally builds a functional shell while reinforcing process management, command parsing, file descriptors, POSIX APIs, and modern C++ software design.
 
-This repository will continue to evolve as I progress through the CodeCrafters Shell challenge.
+The repository will continue to evolve as additional shell features are implemented throughout the CodeCrafters challenge.
