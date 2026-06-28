@@ -1,4 +1,4 @@
-#include "../completion/completion.hpp"
+#include "completion/completion.hpp"
 #include "input/line_editor.hpp"
 #include "parser/parser.hpp"
 #include "builtins/builtins.hpp"
@@ -36,7 +36,7 @@ int main()
         }
         else if (cmd.args[0] == "type")
         {
-            handleType(cmd);
+            handleType(cmd.args.size() > 1 ? cmd.args[1] : "");
         }
         else if (cmd.args[0] == "pwd")
         {
@@ -44,7 +44,7 @@ int main()
         }
         else if (cmd.args[0] == "cd")
         {
-            handleCd(cmd);
+            handleCd(cmd.args.size() > 1 ? cmd.args[1] : "");
         }
         else if (cmd.args[0] == "exit")
         {

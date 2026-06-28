@@ -1,5 +1,7 @@
 #include "completion.hpp"
 
+
+#include <cstdio>      // <-- Required for FILE
 #include <cstring>
 #include <cstdlib>
 #include <string.h>
