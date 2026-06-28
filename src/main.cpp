@@ -1,9 +1,12 @@
-#include <iostream>
-#include <string>
-
+#include "input/line_editor.hpp"
 #include "parser/parser.hpp"
 #include "builtins/builtins.hpp"
 #include "executor/executor.hpp"
+
+#include <iostream>
+
+#include <string>
+
 
 using namespace std;
 
@@ -12,12 +15,11 @@ int main()
     cout << unitbuf;
     cerr << unitbuf;
 
+    LineEditor lineEditor;
     while(true)
     {
-        cout << "$ ";
+      std::string str = lineEditor.readLine("$ ");
 
-        string str;
-        getline(cin, str);
 
         if(str.empty())
         {

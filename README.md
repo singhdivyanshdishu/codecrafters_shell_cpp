@@ -194,6 +194,10 @@ codecrafters-shell-cpp/
 │   │   ├── history_manager.cpp
 │   │   └── history_manager.hpp
 │   │
+│   ├── input/
+│   │   ├── line_editor.cpp
+│   │   └── line_editor.hpp
+│   │
 │   ├── jobs/
 │   │   ├── job_manager.cpp
 │   │   └── job_manager.hpp
