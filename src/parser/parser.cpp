@@ -30,6 +30,12 @@ ParsedCommand parseCommand(const string& line)
             result.stdErrFile = tokens[i+1];
             break;
         }
+        else if(tokens[i] == "2>>"){
+            result.redirectStderr = true;
+            result.appendStderr = true;
+            result.stdErrFile = tokens[i+1];
+            break;
+        }
 
         result.args.push_back(tokens[i]);
     }

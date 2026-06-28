@@ -60,9 +60,18 @@ void executeExternalCommand(const ParsedCommand& cmd)
             close(fd);
         }
         if(cmd.redirectStderr){
+            int flags = O_WRONLY | O_CREAT;
+            if(cmd.appendStderr){
+                flags |= O_APPEND;
+            }
+            else{
+                flags |= O_TRUNC;
+            }
+
+
             int fd = open(
                 cmd.stdErrFile.c_str(),
-                O_WRONLY | O_CREAT |  O_TRUNC ,
+                flags ,
                 0644
             );
             if(fd == -1){
