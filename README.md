@@ -11,7 +11,7 @@ It recreates core shell functionality such as command parsing, built-in commands
 - [x] Quoting
 - [x] Redirection
 - [ ] Command Completion
-    - [ ] Builtin completion
+    - [x] Builtin completion
     - [ ] Completion with arguments
     - [ ] Missing completions
     - [ ] Executable completion
@@ -257,7 +257,3 @@ This project uses POSIX APIs and is primarily developed and tested on Linux-base
 This project is a hands-on exploration of Unix shell internals and systems programming. Rather than studying operating system concepts in isolation, each Codecrafters stage incrementally builds a functional shell while reinforcing process management, command parsing, file descriptors, POSIX APIs, and modern C++ software design.
 
 The repository will continue to evolve as additional shell features are implemented throughout the CodeCrafters challenge.
-
- ##Mini Shell Architecture
-
-
