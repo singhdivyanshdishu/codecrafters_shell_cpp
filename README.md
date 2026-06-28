@@ -151,7 +151,7 @@ Through this project I aim to gain a deeper understanding of:
 
 ## Project Architecture
 
-```text
+```shell
 codecrafters-shell-cpp/
 │
 ├── src/
