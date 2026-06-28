@@ -9,12 +9,14 @@ This project explores how real shells work internally by implementing command pa
 - [x] Introduction
 - [x] Navigation
 - [x] Quoting
-- [ ] Redirection
-    - [x] Redirect stdout
-    - [x] Redirect stderr
-    - [x] Append stdout
-    - [ ] Append stderr
+- [x] Redirection
 - [ ] Command Completion
+    - [ ] Builtin completion
+    - [ ] Completion with arguments
+    - [ ] Missing completions
+    - [ ] Executable completion
+    - [ ] Multiple completions
+    - [ ] Partial completions
 - [ ] Filename Completion
 - [ ] Programmable Completion
 - [ ] Background Jobs
